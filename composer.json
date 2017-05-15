@@ -1,0 +1,34 @@
+{
+    "name":        "geocoder-php/provider-integration-tests",
+    "type":        "library",
+    "description": "Integration tests Geocoder provider",
+    "keywords":    [
+        "geocoder",
+        "provider",
+        "test"
+    ],
+    "license":     "MIT",
+    "minimum-stability": "dev",
+    "authors":     [
+        {
+            "name":     "Tobias Nyholm",
+            "email":    "tobias.nyholm@gmail.com",
+            "homepage": "https://github.com/nyholm"
+        }
+    ],
+    "require":     {
+        "php": "^5.5 || ^7.0",
+        "phpunit/phpunit": "^4.8 || ^5.4",
+        "psr/http-message-implementation": "^1.0",
+        "willdurand/geocoder": "^4.0",
+        "guzzlehttp/psr7": "^1.4"
+    },
+    "require-dev": {
+        "php-http/curl-client": "^1.7"
+    },
+    "autoload":    {
+        "psr-4": {
+            "Geocoder\\IntegrationTests\\": "src/"
+        }
+    }
+}
