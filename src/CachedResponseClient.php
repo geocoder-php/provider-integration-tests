@@ -10,13 +10,13 @@
 
 namespace Geocoder\IntegrationTest;
 
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\Response;
 use Http\Client\HttpClient;
 use Psr\Http\Message\RequestInterface;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7;
 
 /**
- * Serve responses from local file cache
+ * Serve responses from local file cache.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */

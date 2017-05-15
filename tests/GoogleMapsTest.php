@@ -10,10 +10,9 @@
 
 namespace Geocoder\IntegrationTest\Test;
 
-
-use Http\Client\HttpClient;
 use Geocoder\IntegrationTest\ProviderIntegrationTest;
 use Geocoder\Provider\GoogleMaps\GoogleMaps;
+use Http\Client\HttpClient;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
