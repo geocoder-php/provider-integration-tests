@@ -56,11 +56,11 @@ class CachedResponseClient implements HttpClient
     {
         $url = (string) $request->getUri();
         $host = (string) $request->getUri()->getHost();
-        if ($this->apiKey) {
+        if (!empty($this->apiKey)) {
             $url = str_replace($this->apiKey, '[apikey]', $url);
         }
 
-        $file = sprintf('%s/%s/%s_%s', __DIR__, $this->cacheDir, $host, sha1($url));
+        $file = sprintf('%s/%s_%s', $this->cacheDir, $host, sha1($url));
         if (is_file($file) && is_readable($file)) {
             return new Response(200, [], Psr7\stream_for(unserialize(file_get_contents($file))));
         }
