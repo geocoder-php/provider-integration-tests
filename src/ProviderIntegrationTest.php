@@ -97,6 +97,19 @@ abstract class ProviderIntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('10', $location->getStreetNumber(), 'Street number should contain "10"');
     }
 
+    public function testGeocodeQueryWithNoResults()
+    {
+        if (isset($this->skippedTests[__FUNCTION__])) {
+            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
+        }
+
+        $provider = $this->createProvider($this->getCachedHttpClient());
+        $query = GeocodeQuery::create('jsajhgsdkfjhsfkjhaldkadjaslgldasd')->withLocale('en');
+        $result = $provider->geocodeQuery($query);
+        $this->assertWellFormattedResult($result);
+        $this->assertEquals(0, $result->count());
+    }
+
     public function testReverseQuery()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
