@@ -23,4 +23,14 @@ class GoogleMapsTest extends ProviderIntegrationTest
     {
         return new GoogleMaps($httpClient);
     }
+
+    protected function getCacheDir()
+    {
+        return dirname(__DIR__).'/.cached_responses';
+    }
+
+    protected function getApiKey()
+    {
+        return '';
+    }
 }
