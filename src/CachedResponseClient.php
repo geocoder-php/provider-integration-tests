@@ -8,7 +8,7 @@
  * @license    MIT License
  */
 
-namespace Geocoder\IntegrationTests;
+namespace Geocoder\IntegrationTest;
 
 use Http\Client\HttpClient;
 use Psr\Http\Message\RequestInterface;

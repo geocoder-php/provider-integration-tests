@@ -19,7 +19,7 @@ Create a test that looks like this:
 
 ```php
 use Http\Client\HttpClient;
-use Geocoder\IntegrationTests\ProviderIntegrationTest;
+use Geocoder\IntegrationTest\ProviderIntegrationTest;
 use Geocoder\Provider\GoogleMaps\GoogleMaps;
 
 class IntegrationTest extends ProviderIntegrationTest

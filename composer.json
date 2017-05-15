@@ -26,9 +26,14 @@
     "require-dev": {
         "php-http/curl-client": "^1.7"
     },
-    "autoload":    {
+    "autoload": {
         "psr-4": {
-            "Geocoder\\IntegrationTests\\": "src/"
+            "Geocoder\\IntegrationTest\\": "src/"
+        }
+    },
+    "autoload-dev":    {
+        "psr-4": {
+            "Geocoder\\IntegrationTest\\Test\\": "tests/"
         }
     }
 }

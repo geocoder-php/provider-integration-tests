@@ -8,7 +8,7 @@
  * @license    MIT License
  */
 
-namespace Geocoder\IntegrationTests;
+namespace Geocoder\IntegrationTest;
 
 use Geocoder\Model\Query\GeocodeQuery;
 use Geocoder\Model\Query\ReverseQuery;
