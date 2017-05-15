@@ -279,7 +279,6 @@ abstract class ProviderIntegrationTest extends TestCase
         $provider->reverseQuery(ReverseQuery::fromCoordinates(0, 0));
     }
 
-
     /**
      * Make sure that a result for a Geocoder is well formatted. Be aware that even
      * a Location with no data may be well formatted.
