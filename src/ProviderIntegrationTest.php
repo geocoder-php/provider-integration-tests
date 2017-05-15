@@ -22,13 +22,12 @@ use Geocoder\Provider\Provider;
 use GuzzleHttp\Psr7\Response;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-abstract class ProviderIntegrationTest extends TestCase
+abstract class ProviderIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var array with functionName => reason
