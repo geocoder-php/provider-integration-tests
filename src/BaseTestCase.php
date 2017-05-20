@@ -23,14 +23,19 @@ use Psr\Http\Message\ResponseInterface;
 abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Get a real HTTP client. If $_SERVER['RESPONSE_CACHE'] is set to a path it will use cached responses.
+     * @return string|null the directory where cached responses are stored
+     */
+    abstract protected function getCacheDir();
+
+    /**
+     * Get a real HTTP client. If a cache dir is set to a path it will use cached responses.
      *
      * @return HttpClient
      */
     protected function getHttpClient($apiKey = null)
     {
-        if (isset($_SERVER['RESPONSE_CACHE']) && false !== $_SERVER['RESPONSE_CACHE']) {
-            return new CachedResponseClient(new HttplugClient(), $_SERVER['RESPONSE_CACHE'], $apiKey);
+        if (null !== $cacheDir = $this->getCacheDir()) {
+            return new CachedResponseClient(new HttplugClient(), $cacheDir, $apiKey);
         } else {
             return new HttplugClient();
         }
