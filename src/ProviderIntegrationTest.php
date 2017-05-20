@@ -16,9 +16,9 @@ use Geocoder\Model\AdminLevelCollection;
 use Geocoder\Model\Bounds;
 use Geocoder\Model\Coordinates;
 use Geocoder\Model\Country;
-use Geocoder\Model\Query\GeocodeQuery;
-use Geocoder\Model\Query\ReverseQuery;
 use Geocoder\Provider\Provider;
+use Geocoder\Query\GeocodeQuery;
+use Geocoder\Query\ReverseQuery;
 use GuzzleHttp\Psr7\Response;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
@@ -95,6 +95,19 @@ abstract class ProviderIntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(-0.1276, $location->getCoordinates()->getLongitude(), 'Longitude should be in London', 0.1);
         $this->assertContains('Downing', $location->getStreetName(), 'Street name should contain "Downing St"');
         $this->assertContains('10', $location->getStreetNumber(), 'Street number should contain "10"');
+    }
+
+    public function testGeocodeQueryWithNoResults()
+    {
+        if (isset($this->skippedTests[__FUNCTION__])) {
+            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
+        }
+
+        $provider = $this->createProvider($this->getCachedHttpClient());
+        $query = GeocodeQuery::create('jsajhgsdkfjhsfkjhaldkadjaslgldasd')->withLocale('en');
+        $result = $provider->geocodeQuery($query);
+        $this->assertWellFormattedResult($result);
+        $this->assertEquals(0, $result->count());
     }
 
     public function testReverseQuery()
@@ -291,8 +304,6 @@ abstract class ProviderIntegrationTest extends \PHPUnit_Framework_TestCase
             $result,
             'The result must be an instance of a Geocoder\Collection'
         );
-
-        $this->assertNotEmpty($result, 'Geocoder\Exception should never be empty. A NoResult exception should be thrown.');
 
         /** @var Location $location */
         foreach ($result as $location) {
