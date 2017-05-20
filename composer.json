@@ -21,6 +21,7 @@
         "phpunit/phpunit": "^4.8 || ^5.4",
         "psr/http-message-implementation": "^1.0",
         "willdurand/geocoder": "^4.0",
+        "php-http/mock-client": "^1.0",
         "guzzlehttp/psr7": "^1.4"
     },
     "require-dev": {
