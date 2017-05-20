@@ -1,13 +1,20 @@
 <?php
 
+/*
+ * This file is part of the Geocoder package.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @license    MIT License
+ */
+
 namespace Geocoder\IntegrationTest;
 
-
 use GuzzleHttp\Psr7\Response;
+use Http\Client\Curl\Client as HttplugClient;
 use Http\Client\HttpClient;
 use Http\Mock\Client as MockedHttpClient;
 use Psr\Http\Message\RequestInterface;
-use Http\Client\Curl\Client as HttplugClient;
 use Psr\Http\Message\ResponseInterface;
 
 /**
