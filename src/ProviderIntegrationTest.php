@@ -94,7 +94,10 @@ abstract class ProviderIntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(51.5033, $location->getCoordinates()->getLatitude(), 'Latitude should be in London', 0.1);
         $this->assertEquals(-0.1276, $location->getCoordinates()->getLongitude(), 'Longitude should be in London', 0.1);
         $this->assertContains('Downing', $location->getStreetName(), 'Street name should contain "Downing St"');
-        $this->assertContains('10', $location->getStreetNumber(), 'Street number should contain "10"');
+
+        if (null !== $streetNumber = $location->getStreetNumber()) {
+            $this->assertContains('10', $streetNumber, 'Street number should contain "10"');
+        }
     }
 
     public function testGeocodeQueryWithNoResults()
