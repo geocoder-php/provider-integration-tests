@@ -16,9 +16,9 @@ use Geocoder\Model\AdminLevelCollection;
 use Geocoder\Model\Bounds;
 use Geocoder\Model\Coordinates;
 use Geocoder\Model\Country;
+use Geocoder\Provider\Provider;
 use Geocoder\Query\GeocodeQuery;
 use Geocoder\Query\ReverseQuery;
-use Geocoder\Provider\Provider;
 use GuzzleHttp\Psr7\Response;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
@@ -304,8 +304,6 @@ abstract class ProviderIntegrationTest extends \PHPUnit_Framework_TestCase
             $result,
             'The result must be an instance of a Geocoder\Collection'
         );
-
-        $this->assertNotEmpty($result, 'Geocoder\Exception should never be empty. A NoResult exception should be thrown.');
 
         /** @var Location $location */
         foreach ($result as $location) {
