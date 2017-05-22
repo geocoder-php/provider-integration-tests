@@ -10,9 +10,9 @@
 
 namespace Geocoder\IntegrationTest;
 
-use GuzzleHttp\Psr7;
-use GuzzleHttp\Psr7\Response;
 use Http\Client\HttpClient;
+use Nyholm\Psr7\Factory\StreamFactory;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -62,7 +62,7 @@ class CachedResponseClient implements HttpClient
 
         $file = sprintf('%s/%s_%s', $this->cacheDir, $host, sha1($url));
         if (is_file($file) && is_readable($file)) {
-            return new Response(200, [], Psr7\stream_for(unserialize(file_get_contents($file))));
+            return new Response(200, [], (new StreamFactory())->createStream(unserialize(file_get_contents($file))));
         }
 
         $response = $this->delegate->sendRequest($request);

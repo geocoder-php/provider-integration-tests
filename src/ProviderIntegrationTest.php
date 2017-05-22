@@ -19,15 +19,17 @@ use Geocoder\Model\Country;
 use Geocoder\Provider\Provider;
 use Geocoder\Query\GeocodeQuery;
 use Geocoder\Query\ReverseQuery;
-use GuzzleHttp\Psr7\Response;
 use Http\Client\HttpClient;
+use Http\Discovery\ClassDiscovery;
 use Http\Discovery\HttpClientDiscovery;
+use Nyholm\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-abstract class ProviderIntegrationTest extends \PHPUnit_Framework_TestCase
+abstract class ProviderIntegrationTest extends TestCase
 {
     /**
      * @var array with functionName => reason
@@ -48,6 +50,12 @@ abstract class ProviderIntegrationTest extends \PHPUnit_Framework_TestCase
      * @return string the API key or substring to be removed from cache.
      */
     abstract protected function getApiKey();
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        ClassDiscovery::prependStrategy('\Nyholm\Psr7\Httplug\DiscoveryStrategy');
+    }
 
     /**
      * @param ResponseInterface $response

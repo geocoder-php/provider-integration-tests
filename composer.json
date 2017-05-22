@@ -17,12 +17,12 @@
         }
     ],
     "require":     {
-        "php": "^5.5 || ^7.0",
-        "phpunit/phpunit": "^4.8 || ^5.4",
+        "php": "^7.0",
+        "phpunit/phpunit": "^6.1",
         "psr/http-message-implementation": "^1.0",
         "willdurand/geocoder": "^4.0",
         "php-http/mock-client": "^1.0",
-        "guzzlehttp/psr7": "^1.4"
+        "nyholm/psr7": "^0.2.2"
     },
     "require-dev": {
         "php-http/curl-client": "^1.7"
