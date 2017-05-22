@@ -9,7 +9,7 @@
   processIsolation="false"
   stopOnFailure="false"
   syntaxCheck="false"
-  bootstrap="vendor/autoload.php"
+  bootstrap="src/bootstrap.php"
   >
   <testsuites>
     <testsuite name="Google Maps">
