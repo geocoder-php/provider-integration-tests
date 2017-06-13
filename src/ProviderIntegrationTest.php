@@ -44,7 +44,7 @@ abstract class ProviderIntegrationTest extends TestCase
     protected $testReverse = true;
     protected $testIpv4 = true;
     protected $testIpv6 = true;
-    protected $testHttpResponse = true;
+    protected $testHttpProvider = true;
 
     /**
      * @return Provider that is used in the tests.
@@ -180,9 +180,7 @@ abstract class ProviderIntegrationTest extends TestCase
         }
 
         $provider = $this->createProvider($this->getCachedHttpClient());
-
-        // TODO use better IPv4 address
-        $result = $provider->geocodeQuery(GeocodeQuery::create('8.8.8.8')->withLocale('en'));
+        $result = $provider->geocodeQuery(GeocodeQuery::create('83.227.123.8')->withLocale('en'));
         $this->assertWellFormattedResult($result);
     }
 
@@ -197,9 +195,7 @@ abstract class ProviderIntegrationTest extends TestCase
         }
 
         $provider = $this->createProvider($this->getCachedHttpClient());
-
-        // TODO use better IPv6 address
-        $result = $provider->geocodeQuery(GeocodeQuery::create('::1')->withLocale('en'));
+        $result = $provider->geocodeQuery(GeocodeQuery::create('2001:0db8:0000:0042:0000:8a2e:0370:7334')->withLocale('en'));
         $this->assertWellFormattedResult($result);
     }
 
@@ -236,7 +232,11 @@ abstract class ProviderIntegrationTest extends TestCase
     {
         $testData = [];
 
-        if ($this->testAddress && $this->testHttpResponse) {
+        if (!$this->testHttpProvider) {
+            return $testData;
+        }
+
+        if ($this->testAddress) {
             $testData[] = [GeocodeQuery::create('foo'), InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [GeocodeQuery::create('foo'), InvalidServerResponse::class, new Response(400), 'Server 400'];
             $testData[] = [GeocodeQuery::create('foo'), InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
@@ -244,7 +244,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [GeocodeQuery::create('foo'), InvalidServerResponse::class, new Response(200), 'Empty response'];
         }
 
-        if ($this->testReverse && $this->testHttpResponse) {
+        if ($this->testReverse) {
             $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidServerResponse::class, new Response(400), 'Server 400'];
             $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
@@ -252,7 +252,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidServerResponse::class, new Response(200), 'Empty response'];
         }
 
-        if ($this->testIpv4 && $this->testHttpResponse) {
+        if ($this->testIpv4) {
             $ipAddress = '123.123.123.123';
             $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(400), 'Server 400'];
@@ -261,8 +261,8 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [GeocodeQuery::create($ipAddress), InvalidCredentials::class, new Response(200), 'Empty response'];
         }
 
-        if ($this->testIpv6 && $this->testHttpResponse) {
-            $ipAddress = '::1'; // TODO use real address
+        if ($this->testIpv6) {
+            $ipAddress = '2001:0db8:0000:0042:0000:8a2e:0370:7334';
             $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(400), 'Server 400'];
             $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(401), 'Invalid credentials response'];
