@@ -11,7 +11,6 @@
 namespace Geocoder\IntegrationTest;
 
 use Geocoder\Collection;
-use Geocoder\Exception\InvalidArgument;
 use Geocoder\Exception\InvalidCredentials;
 use Geocoder\Exception\InvalidServerResponse;
 use Geocoder\Exception\QuotaExceeded;
@@ -199,14 +198,13 @@ abstract class ProviderIntegrationTest extends TestCase
         $this->assertWellFormattedResult($result);
     }
 
-
     /**
      * @dataProvider exceptionDataProvider
      *
      * @param GeocodeQuery|ReverseQuery $query
-     * @param string $exceptionClass
-     * @param ResponseInterface|null $response
-     * @param string $message
+     * @param string                    $exceptionClass
+     * @param ResponseInterface|null    $response
+     * @param string                    $message
      */
     public function testExceptions($query, string $exceptionClass, ResponseInterface $response = null, string $message = '')
     {
@@ -269,7 +267,6 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [GeocodeQuery::create($ipAddress), QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
             $testData[] = [GeocodeQuery::create($ipAddress), InvalidCredentials::class, new Response(200), 'Empty response'];
         }
-
 
         return $testData;
     }
