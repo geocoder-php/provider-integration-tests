@@ -11,6 +11,10 @@
 namespace Geocoder\IntegrationTest;
 
 use Geocoder\Collection;
+use Geocoder\Exception\InvalidArgument;
+use Geocoder\Exception\InvalidCredentials;
+use Geocoder\Exception\InvalidServerResponse;
+use Geocoder\Exception\QuotaExceeded;
 use Geocoder\Location;
 use Geocoder\Model\AdminLevelCollection;
 use Geocoder\Model\Bounds;
@@ -35,6 +39,12 @@ abstract class ProviderIntegrationTest extends TestCase
      * @var array with functionName => reason
      */
     protected $skippedTests = [];
+
+    protected $testAddress = true;
+    protected $testReverse = true;
+    protected $testIpv4 = true;
+    protected $testIpv6 = true;
+    protected $testHttpResponse = true;
 
     /**
      * @return Provider that is used in the tests.
@@ -91,6 +101,9 @@ abstract class ProviderIntegrationTest extends TestCase
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
+        if (!$this->testAddress) {
+            $this->markTestSkipped('Geocoding address is not supported by this provider');
+        }
 
         $provider = $this->createProvider($this->getCachedHttpClient());
         $query = GeocodeQuery::create('10 Downing St, London, UK')->withLocale('en');
@@ -113,6 +126,9 @@ abstract class ProviderIntegrationTest extends TestCase
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
+        if (!$this->testAddress) {
+            $this->markTestSkipped('Geocoding address is not supported by this provider');
+        }
 
         $provider = $this->createProvider($this->getCachedHttpClient());
         $query = GeocodeQuery::create('jsajhgsdkfjhsfkjhaldkadjaslgldasd')->withLocale('en');
@@ -126,6 +142,9 @@ abstract class ProviderIntegrationTest extends TestCase
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
+        if (!$this->testReverse) {
+            $this->markTestSkipped('Reverse geocoding address is not supported by this provider');
+        }
 
         $provider = $this->createProvider($this->getCachedHttpClient());
 
@@ -134,36 +153,14 @@ abstract class ProviderIntegrationTest extends TestCase
         $this->assertWellFormattedResult($result);
     }
 
-    /**
-     * @expectedException \Geocoder\Exception\InvalidArgument
-     */
-    public function testEmptyQuery()
+    public function testReverseQueryWithNoResults()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $provider = $this->createProvider($this->getCachedHttpClient());
-        $provider->geocodeQuery(GeocodeQuery::create(''));
-    }
-
-    /**
-     * @expectedException \Geocoder\Exception\InvalidArgument
-     */
-    public function testNullQuery()
-    {
-        if (isset($this->skippedTests[__FUNCTION__])) {
-            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
-        }
-
-        $provider = $this->createProvider($this->getCachedHttpClient());
-        $provider->geocodeQuery(GeocodeQuery::create(null));
-    }
-
-    public function testEmptyReverseQuery()
-    {
-        if (isset($this->skippedTests[__FUNCTION__])) {
-            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
+        if (!$this->testReverse) {
+            $this->markTestSkipped('Reverse geocoding address is not supported by this provider');
         }
 
         $provider = $this->createProvider($this->getCachedHttpClient());
@@ -172,134 +169,109 @@ abstract class ProviderIntegrationTest extends TestCase
         $this->assertEquals(0, $result->count());
     }
 
-    /**
-     * @expectedException \Geocoder\Exception\InvalidServerResponse
-     */
-    public function testServer500Error()
+    public function testGeocodeIpv4()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $provider = $this->createProvider($this->getHttpClient(new Response(500)));
-        $provider->geocodeQuery(GeocodeQuery::create('foo'));
+        if (!$this->testIpv4) {
+            $this->markTestSkipped('Geocoding IPv4 is not supported by this provider');
+        }
+
+        $provider = $this->createProvider($this->getCachedHttpClient());
+
+        // TODO use better IPv4 address
+        $result = $provider->geocodeQuery(GeocodeQuery::create('8.8.8.8')->withLocale('en'));
+        $this->assertWellFormattedResult($result);
     }
 
-    /**
-     * @expectedException \Geocoder\Exception\InvalidServerResponse
-     */
-    public function testServer500ErrorReverse()
+    public function testGeocodeIpv6()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $provider = $this->createProvider($this->getHttpClient(new Response(500)));
-        $provider->reverseQuery(ReverseQuery::fromCoordinates(0, 0));
+        if (!$this->testIpv6) {
+            $this->markTestSkipped('Geocoding IPv6 is not supported by this provider');
+        }
+
+        $provider = $this->createProvider($this->getCachedHttpClient());
+
+        // TODO use better IPv6 address
+        $result = $provider->geocodeQuery(GeocodeQuery::create('::1')->withLocale('en'));
+        $this->assertWellFormattedResult($result);
     }
 
+
     /**
-     * @expectedException \Geocoder\Exception\InvalidServerResponse
+     * @dataProvider exceptionDataProvider
+     *
+     * @param GeocodeQuery|ReverseQuery $query
+     * @param string $exceptionClass
+     * @param ResponseInterface|null $response
+     * @param string $message
      */
-    public function testServer400Error()
+    public function testExceptions($query, string $exceptionClass, ResponseInterface $response = null, string $message = '')
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $provider = $this->createProvider($this->getHttpClient(new Response(400)));
-        $provider->geocodeQuery(GeocodeQuery::create('foo'));
+        if (null === $response) {
+            $provider = $this->createProvider($this->getCachedHttpClient());
+        } else {
+            $provider = $this->createProvider($this->getHttpClient($response));
+        }
+
+        $this->expectException($exceptionClass);
+        if ($query instanceof ReverseQuery) {
+            $provider->reverseQuery($query);
+        } else {
+            $provider->geocodeQuery($query);
+        }
     }
 
-    /**
-     * @expectedException \Geocoder\Exception\InvalidServerResponse
-     */
-    public function testServer400ErrorReverse()
+    public function exceptionDataProvider()
     {
-        if (isset($this->skippedTests[__FUNCTION__])) {
-            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
+        $testData = [];
+
+        if ($this->testAddress && $this->testHttpResponse) {
+            $testData[] = [GeocodeQuery::create('foo'), InvalidServerResponse::class, new Response(500), 'Server 500'];
+            $testData[] = [GeocodeQuery::create('foo'), InvalidServerResponse::class, new Response(400), 'Server 400'];
+            $testData[] = [GeocodeQuery::create('foo'), InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [GeocodeQuery::create('foo'), QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
+            $testData[] = [GeocodeQuery::create('foo'), InvalidServerResponse::class, new Response(200), 'Empty response'];
         }
 
-        $provider = $this->createProvider($this->getHttpClient(new Response(400)));
-        $provider->reverseQuery(ReverseQuery::fromCoordinates(0, 0));
-    }
-
-    /**
-     * @expectedException \Geocoder\Exception\InvalidServerResponse
-     */
-    public function testServerEmptyResponse()
-    {
-        if (isset($this->skippedTests[__FUNCTION__])) {
-            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
+        if ($this->testReverse && $this->testHttpResponse) {
+            $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidServerResponse::class, new Response(500), 'Server 500'];
+            $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidServerResponse::class, new Response(400), 'Server 400'];
+            $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [ReverseQuery::fromCoordinates(0, 0), QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
+            $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidServerResponse::class, new Response(200), 'Empty response'];
         }
 
-        $provider = $this->createProvider($this->getHttpClient(new Response(200)));
-        $provider->geocodeQuery(GeocodeQuery::create('foo'));
-    }
-
-    /**
-     * @expectedException \Geocoder\Exception\InvalidServerResponse
-     */
-    public function testServerEmptyResponseReverse()
-    {
-        if (isset($this->skippedTests[__FUNCTION__])) {
-            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
+        if ($this->testIpv4 && $this->testHttpResponse) {
+            $ipAddress = '123.123.123.123';
+            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(500), 'Server 500'];
+            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(400), 'Server 400'];
+            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [GeocodeQuery::create($ipAddress), QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
+            $testData[] = [GeocodeQuery::create($ipAddress), InvalidCredentials::class, new Response(200), 'Empty response'];
         }
 
-        $provider = $this->createProvider($this->getHttpClient(new Response(200)));
-        $provider->reverseQuery(ReverseQuery::fromCoordinates(0, 0));
-    }
-
-    /**
-     * @expectedException \Geocoder\Exception\InvalidCredentials
-     */
-    public function testInvalidCredentialsResponse()
-    {
-        if (isset($this->skippedTests[__FUNCTION__])) {
-            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
+        if ($this->testIpv6 && $this->testHttpResponse) {
+            $ipAddress = '::1'; // TODO use real address
+            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(500), 'Server 500'];
+            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(400), 'Server 400'];
+            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [GeocodeQuery::create($ipAddress), QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
+            $testData[] = [GeocodeQuery::create($ipAddress), InvalidCredentials::class, new Response(200), 'Empty response'];
         }
 
-        $provider = $this->createProvider($this->getHttpClient(new Response(401)));
-        $provider->geocodeQuery(GeocodeQuery::create('foo'));
-    }
 
-    /**
-     * @expectedException \Geocoder\Exception\InvalidCredentials
-     */
-    public function testInvalidCredentialsResponseReverse()
-    {
-        if (isset($this->skippedTests[__FUNCTION__])) {
-            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
-        }
-
-        $provider = $this->createProvider($this->getHttpClient(new Response(401)));
-        $provider->reverseQuery(ReverseQuery::fromCoordinates(0, 0));
-    }
-
-    /**
-     * @expectedException \Geocoder\Exception\QuotaExceeded
-     */
-    public function testQuotaExceededResponse()
-    {
-        if (isset($this->skippedTests[__FUNCTION__])) {
-            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
-        }
-
-        $provider = $this->createProvider($this->getHttpClient(new Response(429)));
-        $provider->geocodeQuery(GeocodeQuery::create('foo'));
-    }
-
-    /**
-     * @expectedException \Geocoder\Exception\QuotaExceeded
-     */
-    public function testQuotaExceededResponseReverse()
-    {
-        if (isset($this->skippedTests[__FUNCTION__])) {
-            $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
-        }
-
-        $provider = $this->createProvider($this->getHttpClient(new Response(429)));
-        $provider->reverseQuery(ReverseQuery::fromCoordinates(0, 0));
+        return $testData;
     }
 
     /**
