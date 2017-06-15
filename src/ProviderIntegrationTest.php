@@ -235,37 +235,39 @@ abstract class ProviderIntegrationTest extends TestCase
         }
 
         if ($this->testAddress) {
-            $testData[] = [GeocodeQuery::create('foo'), InvalidServerResponse::class, new Response(500), 'Server 500'];
-            $testData[] = [GeocodeQuery::create('foo'), InvalidServerResponse::class, new Response(400), 'Server 400'];
-            $testData[] = [GeocodeQuery::create('foo'), InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
-            $testData[] = [GeocodeQuery::create('foo'), QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
-            $testData[] = [GeocodeQuery::create('foo'), InvalidServerResponse::class, new Response(200), 'Empty response'];
+            $q = GeocodeQuery::create('foo');
+            $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
+            $testData[] = [$q, InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(200), 'Empty response'];
         }
 
         if ($this->testReverse) {
-            $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidServerResponse::class, new Response(500), 'Server 500'];
-            $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidServerResponse::class, new Response(400), 'Server 400'];
-            $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
-            $testData[] = [ReverseQuery::fromCoordinates(0, 0), QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
-            $testData[] = [ReverseQuery::fromCoordinates(0, 0), InvalidServerResponse::class, new Response(200), 'Empty response'];
+            $q = ReverseQuery::fromCoordinates(0, 0);
+            $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
+            $testData[] = [$q, InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(200), 'Empty response'];
         }
 
         if ($this->testIpv4) {
-            $ipAddress = '123.123.123.123';
-            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(500), 'Server 500'];
-            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(400), 'Server 400'];
-            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(401), 'Invalid credentials response'];
-            $testData[] = [GeocodeQuery::create($ipAddress), QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
-            $testData[] = [GeocodeQuery::create($ipAddress), InvalidCredentials::class, new Response(200), 'Empty response'];
+            $q = GeocodeQuery::create('123.123.123.123');
+            $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
+            $testData[] = [$q, InvalidCredentials::class, new Response(200), 'Empty response'];
         }
 
         if ($this->testIpv6) {
-            $ipAddress = '2001:0db8:0000:0042:0000:8a2e:0370:7334';
-            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(500), 'Server 500'];
-            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(400), 'Server 400'];
-            $testData[] = [GeocodeQuery::create($ipAddress), InvalidServerResponse::class, new Response(401), 'Invalid credentials response'];
-            $testData[] = [GeocodeQuery::create($ipAddress), QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
-            $testData[] = [GeocodeQuery::create($ipAddress), InvalidCredentials::class, new Response(200), 'Empty response'];
+            $q = GeocodeQuery::create('2001:0db8:0000:0042:0000:8a2e:0370:7334');
+            $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
+            $testData[] = [$q, InvalidCredentials::class, new Response(200), 'Empty response'];
         }
 
         return $testData;
