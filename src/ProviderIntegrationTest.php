@@ -247,27 +247,27 @@ abstract class ProviderIntegrationTest extends TestCase
             $q = ReverseQuery::fromCoordinates(0, 0);
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(200), 'Empty response'];
             $testData[] = [$q, InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
             $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
-            $testData[] = [$q, InvalidServerResponse::class, new Response(200), 'Empty response'];
         }
 
         if ($this->testIpv4) {
             $q = GeocodeQuery::create('123.123.123.123');
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
-            $testData[] = [$q, InvalidServerResponse::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(200), 'Empty response'];
+            $testData[] = [$q, InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
             $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
-            $testData[] = [$q, InvalidCredentials::class, new Response(200), 'Empty response'];
         }
 
         if ($this->testIpv6) {
             $q = GeocodeQuery::create('2001:0db8:0000:0042:0000:8a2e:0370:7334');
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
-            $testData[] = [$q, InvalidServerResponse::class, new Response(401), 'Invalid credentials response'];
+            $testData[] = [$q, InvalidServerResponse::class, new Response(200), 'Empty response'];
+            $testData[] = [$q, InvalidCredentials::class, new Response(401), 'Invalid credentials response'];
             $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
-            $testData[] = [$q, InvalidCredentials::class, new Response(200), 'Empty response'];
         }
 
         return $testData;
