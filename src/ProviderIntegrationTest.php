@@ -90,7 +90,16 @@ abstract class ProviderIntegrationTest extends TestCase
      */
     private function getCachedHttpClient()
     {
-        $client = HttpClientDiscovery::find();
+        try {
+            $client = HttpClientDiscovery::find();
+        } catch (\Http\Discovery\NotFoundException $e) {
+            $client = $this->getMockForAbstractClass(HttpClient::class);
+
+            $client
+                ->expects($this->any())
+                ->method('sendRequest')
+                ->willThrowException($e);
+        }
 
         return new CachedResponseClient($client, $this->getCacheDir(), $this->getApiKey());
     }
