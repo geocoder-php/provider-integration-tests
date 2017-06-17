@@ -20,12 +20,12 @@
         "php": "^7.0",
         "phpunit/phpunit": "^6.1",
         "psr/http-message-implementation": "^1.0",
-        "geocoder-php/google-maps-provider": "^4.0",
         "php-http/mock-client": "^1.0",
         "nyholm/psr7": "^0.2.2"
     },
     "require-dev": {
-        "php-http/curl-client": "^1.7"
+        "php-http/curl-client": "^1.7",
+        "geocoder-php/google-maps-provider": "^4.0"
     },
     "autoload": {
         "psr-4": {
