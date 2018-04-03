@@ -60,7 +60,11 @@ class CachedResponseClient implements HttpClient
             $url = str_replace($this->apiKey, '[apikey]', $url);
         }
 
-        $file = sprintf('%s/%s_%s', $this->cacheDir, $host, sha1($url));
+        $cacheKey = $url;
+        if ('POST' == $request->getMethod()) {
+            $cacheKey .= $request->getBody();
+        }
+        $file = sprintf('%s/%s_%s', $this->cacheDir, $host, sha1($cacheKey));
         if (is_file($file) && is_readable($file)) {
             return new Response(200, [], (new StreamFactory())->createStream(unserialize(file_get_contents($file))));
         }
