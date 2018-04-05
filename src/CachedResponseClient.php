@@ -61,7 +61,7 @@ class CachedResponseClient implements HttpClient
         }
 
         $cacheKey = $url;
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             $cacheKey .= $request->getBody();
         }
         $file = sprintf('%s/%s_%s', $this->cacheDir, $host, sha1($cacheKey));
