@@ -12,7 +12,6 @@ namespace Geocoder\IntegrationTest;
 
 use Http\Client\Curl\Client as HttplugClient;
 use Http\Client\HttpClient;
-use Http\Discovery\ClassDiscovery;
 use Http\Mock\Client as MockedHttpClient;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -28,12 +27,6 @@ abstract class BaseTestCase extends TestCase
      * @return string|null the directory where cached responses are stored
      */
     abstract protected function getCacheDir();
-
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        ClassDiscovery::prependStrategy('\Nyholm\Psr7\Httplug\DiscoveryStrategy');
-    }
 
     /**
      * Get a real HTTP client. If a cache dir is set to a path it will use cached responses.
