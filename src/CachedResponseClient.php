@@ -31,7 +31,7 @@ class CachedResponseClient implements HttpClient
      * @var null|string
      */
     private $apiKey;
-    
+
     /**
      * @var null|string
      */
