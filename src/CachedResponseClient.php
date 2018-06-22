@@ -31,6 +31,11 @@ class CachedResponseClient implements HttpClient
      * @var null|string
      */
     private $apiKey;
+    
+    /**
+     * @var null|string
+     */
+    private $appCode;
 
     /**
      * @var string
@@ -41,12 +46,15 @@ class CachedResponseClient implements HttpClient
      * @param HttpClient  $delegate
      * @param string      $cacheDir
      * @param string|null $apiKey
+     * @param string|null $appCode
      */
-    public function __construct(HttpClient $delegate, $cacheDir, $apiKey = null)
+    public function __construct(HttpClient $delegate, $cacheDir, $apiKey = null, $appCode = null)
     {
         $this->delegate = $delegate;
         $this->cacheDir = $cacheDir;
         $this->apiKey = $apiKey;
+        $this->appCode = $appCode;
+
     }
 
     /**
@@ -61,6 +69,9 @@ class CachedResponseClient implements HttpClient
         }
         if (!empty($this->apiKey)) {
             $cacheKey = str_replace($this->apiKey, '[apikey]', $cacheKey);
+        }
+        if (!empty($this->appCode)) {
+            $cacheKey = str_replace($this->appCode, '[appCode]', $cacheKey);
         }
 
         $file = sprintf('%s/%s_%s', $this->cacheDir, $host, sha1($cacheKey));
