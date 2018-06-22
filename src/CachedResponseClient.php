@@ -54,7 +54,6 @@ class CachedResponseClient implements HttpClient
         $this->cacheDir = $cacheDir;
         $this->apiKey = $apiKey;
         $this->appCode = $appCode;
-
     }
 
     /**
