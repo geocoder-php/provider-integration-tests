@@ -23,7 +23,6 @@ use Geocoder\Provider\Provider;
 use Geocoder\Query\GeocodeQuery;
 use Geocoder\Query\ReverseQuery;
 use Http\Client\HttpClient;
-use Http\Discovery\ClassDiscovery;
 use Http\Discovery\HttpClientDiscovery;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -59,12 +58,6 @@ abstract class ProviderIntegrationTest extends TestCase
      * @return string the API key or substring to be removed from cache.
      */
     abstract protected function getApiKey();
-
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        ClassDiscovery::prependStrategy('\Nyholm\Psr7\Httplug\DiscoveryStrategy');
-    }
 
     /**
      * @param ResponseInterface $response
