@@ -22,6 +22,8 @@ use Psr\Http\Message\RequestInterface;
  */
 class CachedResponseClient implements HttpClient
 {
+    use HttpClientTrait;
+
     /**
      * @var HttpClient
      */
@@ -59,7 +61,7 @@ class CachedResponseClient implements HttpClient
     /**
      * {@inheritdoc}
      */
-    public function sendRequest(RequestInterface $request)
+    protected function doSendRequest(RequestInterface $request)
     {
         $host = (string) $request->getUri()->getHost();
         $cacheKey = (string) $request->getUri();
