@@ -11,20 +11,20 @@
 namespace Geocoder\IntegrationTest\Test;
 
 use Geocoder\IntegrationTest\ProviderIntegrationTest;
-use Geocoder\Provider\GoogleMaps\GoogleMaps;
+use Geocoder\Provider\Nominatim\Nominatim;
 use Http\Client\HttpClient;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class GoogleMapsTest extends ProviderIntegrationTest
+class NominatimTest extends ProviderIntegrationTest
 {
     protected $testIpv4 = false;
     protected $testIpv6 = false;
 
     protected function createProvider(HttpClient $httpClient)
     {
-        return new GoogleMaps($httpClient);
+        return Nominatim::withOpenStreetMapServer($httpClient, 'Geocoder PHP/Nominatim Provider/Nominatim Test');
     }
 
     protected function getCacheDir()

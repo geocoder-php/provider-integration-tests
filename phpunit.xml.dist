@@ -20,8 +20,8 @@
     </exclude>
   </coverage>
   <testsuites>
-    <testsuite name="Google Maps">
-      <file>./tests/GoogleMapsTest.php</file>
+    <testsuite name="Nominatim">
+      <file>./tests/NominatimTest.php</file>
     </testsuite>
   </testsuites>
 </phpunit>
