@@ -14,13 +14,13 @@
         }
     ],
     "require":     {
-        "php": "^7.1",
-        "phpunit/phpunit": "^7.5",
+        "php": "^7.3 || ^8.0",
+        "phpunit/phpunit": "^9.5",
         "php-http/mock-client": "^1.2",
-        "nyholm/psr7": "^1.0.0"
+        "nyholm/psr7": "^1.0"
     },
     "require-dev": {
-        "php-http/curl-client": "^1.7",
+        "php-http/curl-client": "^2.2",
         "geocoder-php/google-maps-provider": "^4.0"
     },
     "autoload": {
@@ -32,5 +32,8 @@
         "psr-4": {
             "Geocoder\\IntegrationTest\\Test\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
