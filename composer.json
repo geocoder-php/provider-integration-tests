@@ -32,8 +32,5 @@
         "psr-4": {
             "Geocoder\\IntegrationTest\\Test\\": "tests/"
         }
-    },
-    "scripts": {
-        "test": "vendor/bin/phpunit"
     }
 }
