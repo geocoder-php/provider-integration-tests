@@ -11,10 +11,10 @@
 namespace Geocoder\IntegrationTest;
 
 use Http\Client\Curl\Client as HttplugClient;
-use Http\Client\HttpClient;
 use Http\Mock\Client as MockedHttpClient;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -31,7 +31,7 @@ abstract class BaseTestCase extends TestCase
     /**
      * Get a real HTTP client. If a cache dir is set to a path it will use cached responses.
      *
-     * @return HttpClient
+     * @return ClientInterface
      */
     protected function getHttpClient($apiKey = null)
     {
@@ -48,7 +48,7 @@ abstract class BaseTestCase extends TestCase
      * @param string|null $body
      * @param int         $statusCode
      *
-     * @return HttpClient
+     * @return ClientInterface
      */
     protected function getMockedHttpClient($body = null, $statusCode = 200)
     {
@@ -64,11 +64,11 @@ abstract class BaseTestCase extends TestCase
      * @param string|null $body
      * @param int         $statusCode
      *
-     * @return HttpClient
+     * @return ClientInterface
      */
     protected function getMockedHttpClientCallback(callable $requestCallback)
     {
-        $client = $this->getMockBuilder(HttpClient::class)->getMock();
+        $client = $this->getMockBuilder(ClientInterface::class)->getMock();
 
         $client
             ->expects($this->once())

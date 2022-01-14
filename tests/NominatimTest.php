@@ -12,7 +12,7 @@ namespace Geocoder\IntegrationTest\Test;
 
 use Geocoder\IntegrationTest\ProviderIntegrationTest;
 use Geocoder\Provider\Nominatim\Nominatim;
-use Http\Client\HttpClient;
+use Psr\Http\Client\ClientInterface;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
@@ -22,7 +22,7 @@ class NominatimTest extends ProviderIntegrationTest
     protected $testIpv4 = false;
     protected $testIpv6 = false;
 
-    protected function createProvider(HttpClient $httpClient)
+    protected function createProvider(ClientInterface $httpClient)
     {
         return Nominatim::withOpenStreetMapServer($httpClient, 'Geocoder PHP/Nominatim Provider/Nominatim Test');
     }
