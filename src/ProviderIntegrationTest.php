@@ -22,10 +22,10 @@ use Geocoder\Model\Country;
 use Geocoder\Provider\Provider;
 use Geocoder\Query\GeocodeQuery;
 use Geocoder\Query\ReverseQuery;
-use Http\Client\HttpClient;
-use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\Psr18ClientDiscovery;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -47,7 +47,7 @@ abstract class ProviderIntegrationTest extends TestCase
     /**
      * @return Provider that is used in the tests.
      */
-    abstract protected function createProvider(HttpClient $httpClient);
+    abstract protected function createProvider(ClientInterface $httpClient);
 
     /**
      * @return string the directory where cached responses are stored
@@ -62,11 +62,11 @@ abstract class ProviderIntegrationTest extends TestCase
     /**
      * @param ResponseInterface $response
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|HttpClient
+     * @return \PHPUnit_Framework_MockObject_MockObject|ClientInterface
      */
     private function getHttpClient(ResponseInterface $response)
     {
-        $client = $this->getMockForAbstractClass(HttpClient::class);
+        $client = $this->getMockForAbstractClass(ClientInterface::class);
 
         $client
             ->expects($this->any())
@@ -84,9 +84,9 @@ abstract class ProviderIntegrationTest extends TestCase
     private function getCachedHttpClient()
     {
         try {
-            $client = HttpClientDiscovery::find();
-        } catch (\Http\Discovery\NotFoundException $e) {
-            $client = $this->getMockForAbstractClass(HttpClient::class);
+            $client = Psr18ClientDiscovery::find();
+        } catch (\Http\Discovery\Exception\NotFoundException $e) {
+            $client = $this->getMockForAbstractClass(ClientInterface::class);
 
             $client
                 ->expects($this->any())

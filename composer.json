@@ -17,6 +17,7 @@
         "php": "^7.3 || ^8.0",
         "phpunit/phpunit": "^9.5",
         "php-http/mock-client": "^1.2",
+        "psr/http-client": "^1.0",
         "nyholm/psr7": "^1.0"
     },
     "require-dev": {

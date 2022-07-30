@@ -18,13 +18,13 @@ composer require --dev geocoder-php/provider-integration-tests:dev-master
 Create a test that looks like this: 
 
 ```php
-use Http\Client\HttpClient;
 use Geocoder\IntegrationTest\ProviderIntegrationTest;
 use Geocoder\Provider\GoogleMaps\GoogleMaps;
+use Psr\Http\Client\ClientInterface;
 
 class IntegrationTest extends ProviderIntegrationTest
 {
-    protected function createProvider(HttpClient $httpClient)
+    protected function createProvider(ClientInterface $httpClient)
     {
         return new GoogleMaps($httpClient);
     }

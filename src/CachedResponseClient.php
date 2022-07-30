@@ -10,22 +10,21 @@
 
 namespace Geocoder\IntegrationTest;
 
-use Http\Client\HttpClient;
 use Nyholm\Psr7\Factory\HttplugFactory;
 use Nyholm\Psr7\Response;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Serve responses from local file cache.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class CachedResponseClient implements HttpClient
+class CachedResponseClient implements ClientInterface
 {
-    use HttpClientTrait;
-
     /**
-     * @var HttpClient
+     * @var ClientInterface
      */
     private $delegate;
 
@@ -45,12 +44,12 @@ class CachedResponseClient implements HttpClient
     private $cacheDir;
 
     /**
-     * @param HttpClient  $delegate
-     * @param string      $cacheDir
-     * @param string|null $apiKey
-     * @param string|null $appCode
+     * @param ClientInterface $delegate
+     * @param string          $cacheDir
+     * @param string|null     $apiKey
+     * @param string|null     $appCode
      */
-    public function __construct(HttpClient $delegate, $cacheDir, $apiKey = null, $appCode = null)
+    public function __construct(ClientInterface $delegate, $cacheDir, $apiKey = null, $appCode = null)
     {
         $this->delegate = $delegate;
         $this->cacheDir = $cacheDir;
@@ -61,7 +60,7 @@ class CachedResponseClient implements HttpClient
     /**
      * {@inheritdoc}
      */
-    protected function doSendRequest(RequestInterface $request)
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $host = (string) $request->getUri()->getHost();
         $cacheKey = (string) $request->getUri();
