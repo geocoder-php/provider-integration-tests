@@ -169,7 +169,7 @@ abstract class ProviderIntegrationTest extends TestCase
         $provider = $this->createProvider($this->getCachedHttpClient());
 
         $result = $provider->reverseQuery(ReverseQuery::fromCoordinates(0, 0));
-        $this->assertEquals(1, $result->count());
+        $this->assertEquals(0, $result->count());
     }
 
     public function testGeocodeIpv4(): void
