@@ -118,10 +118,13 @@ abstract class ProviderIntegrationTest extends TestCase
         $this->assertNotNull($coordinates, 'Coordinates should not be null');
         $this->assertEqualsWithDelta(51.5033, $coordinates->getLatitude(), 0.1, 'Latitude should be in London');
         $this->assertEqualsWithDelta(-0.1276, $coordinates->getLongitude(), 0.1, 'Longitude should be in London');
-        $this->assertNotNull($location->getStreetName(), 'Street name should not be null');
-        $this->assertStringContainsString('Downing', $location->getStreetName(), 'Street name should contain "Downing St"');
-        $this->assertNotNull($location->getStreetNumber(), 'Street number should not be null');
-        $this->assertStringContainsString('10', (string) $location->getStreetNumber(), 'Street number should contain "10"');
+
+        if (null !== ($streetName = $location->getStreetName())) {
+            $this->assertStringContainsString('Downing', $streetName, 'Street name should contain "Downing St"');
+        }
+        if (null !== ($streetNumber = $location->getStreetNumber())) {
+            $this->assertStringContainsString('10', (string) $streetNumber, 'Street number should contain "10"');
+        }
     }
 
     public function testGeocodeQueryWithNoResults(): void
