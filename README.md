@@ -5,7 +5,7 @@
 [![Monthly Downloads](https://poser.pugx.org/geocoder-php/provider-integration-tests/d/monthly.png)](https://packagist.org/packages/geocoder-php/provider-integration-tests)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
-This repository contains integration tests to make sure your implementation of a Geocoder Provider is correct. 
+This repository contains integration tests to make sure your implementation of a Geocoder Provider is correct.
 
 ### Install
 
@@ -15,7 +15,7 @@ composer require --dev geocoder-php/provider-integration-tests:dev-master
 
 ### Use
 
-Create a test that looks like this: 
+Create a test that looks like this:
 
 ```php
 use Geocoder\IntegrationTest\ProviderIntegrationTest;
@@ -28,16 +28,15 @@ class IntegrationTest extends ProviderIntegrationTest
     {
         return new GoogleMaps($httpClient);
     }
-    
-    protected function getCacheDir()
+
+    protected function getCacheDir(): string;
     {
         return dirname(__DIR__).'/.cached_responses';
     }
 
-    protected function getApiKey()
+    protected function getApiKey(): string;
     {
         return env('GOOLE_API_KEY');
     }
 }
 ```
-
