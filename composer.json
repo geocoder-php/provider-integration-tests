@@ -1,37 +1,50 @@
 {
-    "name":        "geocoder-php/provider-integration-tests",
-    "type":        "library",
+    "name": "geocoder-php/provider-integration-tests",
     "description": "Integration tests Geocoder provider",
-    "keywords":    ["geocoder", "provider", "test"],
-    "license":     "MIT",
-    "minimum-stability": "dev",
-    "authors":
-    [
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "geocoder",
+        "provider",
+        "test"
+    ],
+    "authors": [
         {
-            "name":     "Tobias Nyholm",
-            "email":    "tobias.nyholm@gmail.com",
+            "name": "Tobias Nyholm",
+            "email": "tobias.nyholm@gmail.com",
             "homepage": "https://github.com/nyholm"
         }
     ],
-    "require":     {
+    "require": {
         "php": "^7.3 || ^8.0",
-        "phpunit/phpunit": "^9.5",
+        "nyholm/psr7": "^1.0",
         "php-http/mock-client": "^1.2",
-        "psr/http-client": "^1.0",
-        "nyholm/psr7": "^1.0"
+        "phpunit/phpunit": "^9.5",
+        "psr/http-client": "^1.0"
     },
     "require-dev": {
-        "php-http/curl-client": "^2.2",
-        "geocoder-php/nominatim-provider": "^5.3"
+        "geocoder-php/nominatim-provider": "^5.3",
+        "php-http/curl-client": "^2.2"
     },
     "autoload": {
         "psr-4": {
             "Geocoder\\IntegrationTest\\": "src/"
         }
     },
-    "autoload-dev":    {
+    "autoload-dev": {
         "psr-4": {
             "Geocoder\\IntegrationTest\\Test\\": "tests/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "php-http/discovery": true
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
