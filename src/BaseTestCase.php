@@ -30,10 +30,8 @@ abstract class BaseTestCase extends TestCase
 
     /**
      * Get a real HTTP client. If a cache dir is set to a path it will use cached responses.
-     *
-     * @return ClientInterface
      */
-    protected function getHttpClient($apiKey = null)
+    protected function getHttpClient(string $apiKey = null): ClientInterface
     {
         if (null !== $cacheDir = $this->getCacheDir()) {
             return new CachedResponseClient(new HttplugClient(), $cacheDir, $apiKey);
@@ -44,13 +42,8 @@ abstract class BaseTestCase extends TestCase
 
     /**
      * Get a mocked HTTP client that never do calls over the internet. Use this is you want to control the response data.
-     *
-     * @param string|null $body
-     * @param int         $statusCode
-     *
-     * @return ClientInterface
      */
-    protected function getMockedHttpClient($body = null, $statusCode = 200)
+    protected function getMockedHttpClient(string $body = null, int $statusCode = 200): ClientInterface
     {
         $client = new MockedHttpClient();
         $client->addResponse(new Response($statusCode, [], $body));
@@ -60,13 +53,8 @@ abstract class BaseTestCase extends TestCase
 
     /**
      * Get a mocked HTTP client where you may do tests on the request.
-     *
-     * @param string|null $body
-     * @param int         $statusCode
-     *
-     * @return ClientInterface
      */
-    protected function getMockedHttpClientCallback(callable $requestCallback)
+    protected function getMockedHttpClientCallback(callable $requestCallback): ClientInterface
     {
         $client = $this->getMockBuilder(ClientInterface::class)->getMock();
 

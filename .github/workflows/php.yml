@@ -7,29 +7,37 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
         php-version: ['7.4', '8.0', '8.1', '8.2']
-
     steps:
     - uses: actions/checkout@v2
-
     - name: Use PHP ${{ matrix.php-version }}
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-version }}
         extensions: curl
-
     - name: Validate composer.json and composer.lock
       run: composer validate
-
     - name: Install dependencies
       run: composer update --prefer-dist --no-progress
-
     - name: Run test suite
       run: composer run-script test
+
+  phpstan:
+    runs-on: ubuntu-latest
+    name: PHPStan
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use PHP 8.2
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.2
+        extensions: curl
+    - name: Install dependencies
+      run: composer install --no-progress
+    - name: Run PHPStan
+      run: composer run-script analyse

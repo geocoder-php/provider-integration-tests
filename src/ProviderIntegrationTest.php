@@ -10,6 +10,7 @@
 
 namespace Geocoder\IntegrationTest;
 
+use Exception;
 use Geocoder\Collection;
 use Geocoder\Exception\InvalidCredentials;
 use Geocoder\Exception\InvalidServerResponse;
@@ -24,6 +25,7 @@ use Geocoder\Query\GeocodeQuery;
 use Geocoder\Query\ReverseQuery;
 use Http\Discovery\Psr18ClientDiscovery;
 use Nyholm\Psr7\Response;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -34,15 +36,15 @@ use Psr\Http\Message\ResponseInterface;
 abstract class ProviderIntegrationTest extends TestCase
 {
     /**
-     * @var array with functionName => reason
+     * @var array<string,string> with functionName => reason
      */
-    protected $skippedTests = [];
+    protected array $skippedTests = [];
 
-    protected $testAddress = true;
-    protected $testReverse = true;
-    protected $testIpv4 = true;
-    protected $testIpv6 = true;
-    protected $testHttpProvider = true;
+    protected bool $testAddress = true;
+    protected bool $testReverse = true;
+    protected bool $testIpv4 = true;
+    protected bool $testIpv6 = true;
+    protected bool $testHttpProvider = true;
 
     /**
      * @return Provider that is used in the tests.
@@ -52,17 +54,17 @@ abstract class ProviderIntegrationTest extends TestCase
     /**
      * @return string the directory where cached responses are stored
      */
-    abstract protected function getCacheDir();
+    abstract protected function getCacheDir(): string;
 
     /**
      * @return string the API key or substring to be removed from cache.
      */
-    abstract protected function getApiKey();
+    abstract protected function getApiKey(): string;
 
     /**
      * @param ResponseInterface $response
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|ClientInterface
+     * @return ClientInterface&MockObject
      */
     private function getHttpClient(ResponseInterface $response)
     {
@@ -78,10 +80,8 @@ abstract class ProviderIntegrationTest extends TestCase
 
     /**
      * This client will make real request if cache was not found.
-     *
-     * @return CachedResponseClient
      */
-    private function getCachedHttpClient()
+    private function getCachedHttpClient(): CachedResponseClient
     {
         try {
             $client = Psr18ClientDiscovery::find();
@@ -97,7 +97,7 @@ abstract class ProviderIntegrationTest extends TestCase
         return new CachedResponseClient($client, $this->getCacheDir(), $this->getApiKey());
     }
 
-    public function testGeocodeQuery()
+    public function testGeocodeQuery(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -111,18 +111,20 @@ abstract class ProviderIntegrationTest extends TestCase
         $result = $provider->geocodeQuery($query);
         $this->assertWellFormattedResult($result);
 
-        // Check Downing Street
+        /** @var Location $location */
         $location = $result->first();
-        $this->assertEqualsWithDelta(51.5033, $location->getCoordinates()->getLatitude(), 0.1, 'Latitude should be in London');
-        $this->assertEqualsWithDelta(-0.1276, $location->getCoordinates()->getLongitude(), 0.1, 'Longitude should be in London');
+        /** @var Coordinates|null $coordinates */
+        $coordinates = $location->getCoordinates();
+        $this->assertNotNull($coordinates, 'Coordinates should not be null');
+        $this->assertEqualsWithDelta(51.5033, $coordinates->getLatitude(), 0.1, 'Latitude should be in London');
+        $this->assertEqualsWithDelta(-0.1276, $coordinates->getLongitude(), 0.1, 'Longitude should be in London');
+        $this->assertNotNull($location->getStreetName(), 'Street name should not be null');
         $this->assertStringContainsString('Downing', $location->getStreetName(), 'Street name should contain "Downing St"');
-
-        if (null !== $streetNumber = $location->getStreetNumber()) {
-            $this->assertStringContainsString('10', $streetNumber, 'Street number should contain "10"');
-        }
+        $this->assertNotNull($location->getStreetNumber(), 'Street number should not be null');
+        $this->assertStringContainsString('10', (string) $location->getStreetNumber(), 'Street number should contain "10"');
     }
 
-    public function testGeocodeQueryWithNoResults()
+    public function testGeocodeQueryWithNoResults(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -138,7 +140,7 @@ abstract class ProviderIntegrationTest extends TestCase
         $this->assertEquals(0, $result->count());
     }
 
-    public function testReverseQuery()
+    public function testReverseQuery(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -154,7 +156,7 @@ abstract class ProviderIntegrationTest extends TestCase
         $this->assertWellFormattedResult($result);
     }
 
-    public function testReverseQueryWithNoResults()
+    public function testReverseQueryWithNoResults(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -170,7 +172,7 @@ abstract class ProviderIntegrationTest extends TestCase
         $this->assertEquals(1, $result->count());
     }
 
-    public function testGeocodeIpv4()
+    public function testGeocodeIpv4(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -185,7 +187,7 @@ abstract class ProviderIntegrationTest extends TestCase
         $this->assertWellFormattedResult($result);
     }
 
-    public function testGeocodeIpv6()
+    public function testGeocodeIpv6(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -204,11 +206,11 @@ abstract class ProviderIntegrationTest extends TestCase
      * @dataProvider exceptionDataProvider
      *
      * @param GeocodeQuery|ReverseQuery $query
-     * @param string                    $exceptionClass
+     * @param class-string<Exception>   $exceptionClass
      * @param ResponseInterface|null    $response
      * @param string                    $message
      */
-    public function testExceptions($query, string $exceptionClass, ResponseInterface $response = null, string $message = '')
+    public function testExceptions($query, string $exceptionClass, ResponseInterface $response = null, string $message = ''): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -228,7 +230,10 @@ abstract class ProviderIntegrationTest extends TestCase
         }
     }
 
-    public function exceptionDataProvider()
+    /**
+     * @return array<array{GeocodeQuery|ReverseQuery, class-string<Exception>, Response, string}>
+     */
+    public function exceptionDataProvider(): array
     {
         $testData = [];
 
@@ -281,7 +286,7 @@ abstract class ProviderIntegrationTest extends TestCase
      *
      * @param $result
      */
-    private function assertWellFormattedResult(Collection $result)
+    private function assertWellFormattedResult(Collection $result): void
     {
         $this->assertInstanceOf(
             Collection::class,
@@ -335,7 +340,7 @@ abstract class ProviderIntegrationTest extends TestCase
             }
 
             // Check country
-            if (null !== $country = $location->getCountry()) {
+            if (null !== ($country = $location->getCountry())) {
                 $this->assertInstanceOf(
                     Country::class,
                     $country,
@@ -345,14 +350,14 @@ abstract class ProviderIntegrationTest extends TestCase
 
                 if (null !== $country->getCode()) {
                     $this->assertNotEmpty(
-                        $location->getCountry()->getCode(),
+                        $country->getCode(),
                         'The Country should not have an empty code.'
                     );
                 }
 
                 if (null !== $country->getName()) {
                     $this->assertNotEmpty(
-                        $location->getCountry()->getName(),
+                        $country->getName(),
                         'The Country should not have an empty name.'
                     );
                 }

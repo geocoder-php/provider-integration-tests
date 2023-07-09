@@ -24,7 +24,8 @@
     },
     "require-dev": {
         "geocoder-php/nominatim-provider": "^5.3",
-        "php-http/curl-client": "^2.2"
+        "php-http/curl-client": "^2.2",
+        "phpstan/phpstan": "^1.10"
     },
     "autoload": {
         "psr-4": {
@@ -45,6 +46,7 @@
         "sort-packages": true
     },
     "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/phpunit"
     }
 }

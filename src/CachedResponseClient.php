@@ -75,8 +75,8 @@ class CachedResponseClient implements ClientInterface
         }
 
         $file = sprintf('%s/%s_%s', $this->cacheDir, $host, sha1($cacheKey));
-        if (is_file($file) && is_readable($file)) {
-            return new Response(200, [], (new HttplugFactory())->createStream(unserialize(file_get_contents($file))));
+        if (is_file($file) && is_readable($file) && ($content = file_get_contents($file)) !== false) {
+            return new Response(200, [], (new HttplugFactory())->createStream(unserialize($content)));
         }
 
         $response = $this->delegate->sendRequest($request);
