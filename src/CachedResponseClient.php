@@ -10,8 +10,8 @@
 
 namespace Geocoder\IntegrationTest;
 
-use Nyholm\Psr7\Factory\HttplugFactory;
 use Nyholm\Psr7\Response;
+use Nyholm\Psr7\Stream;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -76,7 +76,7 @@ class CachedResponseClient implements ClientInterface
 
         $file = sprintf('%s/%s_%s', $this->cacheDir, $host, sha1($cacheKey));
         if (is_file($file) && is_readable($file) && ($content = file_get_contents($file)) !== false) {
-            return new Response(200, [], (new HttplugFactory())->createStream(unserialize($content)));
+            return new Response(200, [], Stream::create(unserialize($content)));
         }
 
         $response = $this->delegate->sendRequest($request);
