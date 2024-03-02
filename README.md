@@ -37,7 +37,7 @@ class IntegrationTest extends ProviderIntegrationTest
 
     protected function getApiKey(): string;
     {
-        return env('GOOLE_API_KEY');
+        return env('GOOGLE_API_KEY');
     }
 }
 ```
