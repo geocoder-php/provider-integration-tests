@@ -25,6 +25,7 @@ use Geocoder\Query\GeocodeQuery;
 use Geocoder\Query\ReverseQuery;
 use Http\Discovery\Psr18ClientDiscovery;
 use Nyholm\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -40,11 +41,11 @@ abstract class ProviderIntegrationTest extends TestCase
      */
     protected array $skippedTests = [];
 
-    protected bool $testAddress = true;
-    protected bool $testReverse = true;
-    protected bool $testIpv4 = true;
-    protected bool $testIpv6 = true;
-    protected bool $testHttpProvider = true;
+    protected static bool $testAddress = true;
+    protected static bool $testReverse = true;
+    protected static bool $testIpv4 = true;
+    protected static bool $testIpv6 = true;
+    protected static bool $testHttpProvider = true;
 
     /**
      * @return Provider that is used in the tests.
@@ -102,7 +103,7 @@ abstract class ProviderIntegrationTest extends TestCase
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
-        if (!$this->testAddress) {
+        if (!self::$testAddress) {
             $this->markTestSkipped('Geocoding address is not supported by this provider');
         }
 
@@ -132,7 +133,7 @@ abstract class ProviderIntegrationTest extends TestCase
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
-        if (!$this->testAddress) {
+        if (!self::$testAddress) {
             $this->markTestSkipped('Geocoding address is not supported by this provider');
         }
 
@@ -148,7 +149,7 @@ abstract class ProviderIntegrationTest extends TestCase
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
-        if (!$this->testReverse) {
+        if (!self::$testReverse) {
             $this->markTestSkipped('Reverse geocoding address is not supported by this provider');
         }
 
@@ -165,7 +166,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        if (!$this->testReverse) {
+        if (!self::$testReverse) {
             $this->markTestSkipped('Reverse geocoding address is not supported by this provider');
         }
 
@@ -181,7 +182,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        if (!$this->testIpv4) {
+        if (!self::$testIpv4) {
             $this->markTestSkipped('Geocoding IPv4 is not supported by this provider');
         }
 
@@ -196,7 +197,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        if (!$this->testIpv6) {
+        if (!self::$testIpv6) {
             $this->markTestSkipped('Geocoding IPv6 is not supported by this provider');
         }
 
@@ -213,6 +214,7 @@ abstract class ProviderIntegrationTest extends TestCase
      * @param ResponseInterface|null    $response
      * @param string                    $message
      */
+    #[DataProvider('exceptionDataProvider')]
     public function testExceptions($query, string $exceptionClass, ResponseInterface $response = null, string $message = ''): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
@@ -236,15 +238,15 @@ abstract class ProviderIntegrationTest extends TestCase
     /**
      * @return array<array{GeocodeQuery|ReverseQuery, class-string<Exception>, Response, string}>
      */
-    public function exceptionDataProvider(): array
+    public static function exceptionDataProvider(): array
     {
         $testData = [];
 
-        if (!$this->testHttpProvider) {
+        if (!self::$testHttpProvider) {
             return $testData;
         }
 
-        if ($this->testAddress) {
+        if (self::$testAddress) {
             $q = GeocodeQuery::create('foo');
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
@@ -253,7 +255,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [$q, InvalidServerResponse::class, new Response(200), 'Empty response'];
         }
 
-        if ($this->testReverse) {
+        if (self::$testReverse) {
             $q = ReverseQuery::fromCoordinates(0, 0);
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
@@ -262,7 +264,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
         }
 
-        if ($this->testIpv4) {
+        if (self::$testIpv4) {
             $q = GeocodeQuery::create('123.123.123.123');
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
@@ -271,7 +273,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
         }
 
-        if ($this->testIpv6) {
+        if (self::$testIpv6) {
             $q = GeocodeQuery::create('2001:0db8:0000:0042:0000:8a2e:0370:7334');
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
