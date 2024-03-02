@@ -76,7 +76,7 @@ class CachedResponseClient implements ClientInterface
 
         $file = sprintf('%s/%s_%s', $this->cacheDir, $host, sha1($cacheKey));
         if (is_file($file) && is_readable($file) && ($content = file_get_contents($file)) !== false) {
-            return new Response(200, [], Stream::create(unserialize($content)));
+            return new Response(200, [], Stream::create(unserialize(trim($content))));
         }
 
         $response = $this->delegate->sendRequest($request);
