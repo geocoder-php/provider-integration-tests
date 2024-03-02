@@ -1,5 +1,6 @@
 # Geocoder integration tests
 
+[![Build Status](https://github.com/geocoder-php/provider-integration-tests/actions/workflows/php.yml/badge.svg)](https://github.com/geocoder-php/provider-integration-tests/actions/workflows/php.yml)
 [![Latest Stable Version](https://poser.pugx.org/geocoder-php/provider-integration-tests/v/stable)](https://packagist.org/packages/geocoder-php/provider-integration-tests)
 [![Total Downloads](https://poser.pugx.org/geocoder-php/provider-integration-tests/downloads)](https://packagist.org/packages/geocoder-php/provider-integration-tests)
 [![Monthly Downloads](https://poser.pugx.org/geocoder-php/provider-integration-tests/d/monthly.png)](https://packagist.org/packages/geocoder-php/provider-integration-tests)
