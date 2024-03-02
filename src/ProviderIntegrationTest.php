@@ -103,7 +103,7 @@ abstract class ProviderIntegrationTest extends TestCase
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
-        if (!self::$testAddress) {
+        if (!static::$testAddress) {
             $this->markTestSkipped('Geocoding address is not supported by this provider');
         }
 
@@ -133,7 +133,7 @@ abstract class ProviderIntegrationTest extends TestCase
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
-        if (!self::$testAddress) {
+        if (!static::$testAddress) {
             $this->markTestSkipped('Geocoding address is not supported by this provider');
         }
 
@@ -149,7 +149,7 @@ abstract class ProviderIntegrationTest extends TestCase
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
-        if (!self::$testReverse) {
+        if (!static::$testReverse) {
             $this->markTestSkipped('Reverse geocoding address is not supported by this provider');
         }
 
@@ -166,7 +166,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        if (!self::$testReverse) {
+        if (!static::$testReverse) {
             $this->markTestSkipped('Reverse geocoding address is not supported by this provider');
         }
 
@@ -182,7 +182,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        if (!self::$testIpv4) {
+        if (!static::$testIpv4) {
             $this->markTestSkipped('Geocoding IPv4 is not supported by this provider');
         }
 
@@ -197,7 +197,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        if (!self::$testIpv6) {
+        if (!static::$testIpv6) {
             $this->markTestSkipped('Geocoding IPv6 is not supported by this provider');
         }
 
@@ -242,11 +242,11 @@ abstract class ProviderIntegrationTest extends TestCase
     {
         $testData = [];
 
-        if (!self::$testHttpProvider) {
+        if (!static::$testHttpProvider) {
             return $testData;
         }
 
-        if (self::$testAddress) {
+        if (static::$testAddress) {
             $q = GeocodeQuery::create('foo');
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
@@ -255,7 +255,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [$q, InvalidServerResponse::class, new Response(200), 'Empty response'];
         }
 
-        if (self::$testReverse) {
+        if (static::$testReverse) {
             $q = ReverseQuery::fromCoordinates(0, 0);
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
@@ -264,7 +264,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
         }
 
-        if (self::$testIpv4) {
+        if (static::$testIpv4) {
             $q = GeocodeQuery::create('123.123.123.123');
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
@@ -273,7 +273,7 @@ abstract class ProviderIntegrationTest extends TestCase
             $testData[] = [$q, QuotaExceeded::class, new Response(429), 'Quota exceeded response'];
         }
 
-        if (self::$testIpv6) {
+        if (static::$testIpv6) {
             $q = GeocodeQuery::create('2001:0db8:0000:0042:0000:8a2e:0370:7334');
             $testData[] = [$q, InvalidServerResponse::class, new Response(500), 'Server 500'];
             $testData[] = [$q, InvalidServerResponse::class, new Response(400), 'Server 400'];
