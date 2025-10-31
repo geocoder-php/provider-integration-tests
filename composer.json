@@ -20,7 +20,7 @@
         "nyholm/psr7": "^1.0",
         "php-http/curl-client": "^2.2",
         "php-http/mock-client": "^1.2",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^9.6.17 || ^10.5 || ^11.0.4",
         "psr/http-client": "^1.0"
     },
     "require-dev": {
