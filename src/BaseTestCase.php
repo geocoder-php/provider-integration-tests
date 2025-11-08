@@ -31,7 +31,7 @@ abstract class BaseTestCase extends TestCase
     /**
      * Get a real HTTP client. If a cache dir is set to a path it will use cached responses.
      */
-    protected function getHttpClient(string $apiKey = null): ClientInterface
+    protected function getHttpClient(?string $apiKey = null): ClientInterface
     {
         if (null !== $cacheDir = $this->getCacheDir()) {
             return new CachedResponseClient(new HttplugClient(), $cacheDir, $apiKey);
@@ -43,7 +43,7 @@ abstract class BaseTestCase extends TestCase
     /**
      * Get a mocked HTTP client that never do calls over the internet. Use this is you want to control the response data.
      */
-    protected function getMockedHttpClient(string $body = null, int $statusCode = 200): ClientInterface
+    protected function getMockedHttpClient(?string $body = null, int $statusCode = 200): ClientInterface
     {
         $client = new MockedHttpClient();
         $client->addResponse(new Response($statusCode, [], $body));
