@@ -32,11 +32,7 @@ jobs:
     name: PHPStan
     steps:
     - uses: actions/checkout@v5
-    - name: Use PHP 8.3
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.3
-        extensions: curl
+    - uses: shivammathur/setup-php@v2
     - name: Install dependencies
       run: composer install --no-progress
     - name: Run PHPStan
