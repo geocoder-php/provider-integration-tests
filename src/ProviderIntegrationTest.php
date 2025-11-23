@@ -215,7 +215,7 @@ abstract class ProviderIntegrationTest extends TestCase
      * @param string                    $message
      */
     #[DataProvider('exceptionDataProvider')]
-    public function testExceptions($query, string $exceptionClass, ResponseInterface $response = null, string $message = ''): void
+    public function testExceptions($query, string $exceptionClass, ?ResponseInterface $response = null, string $message = ''): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -313,7 +313,6 @@ abstract class ProviderIntegrationTest extends TestCase
                 'Location::getAdminLevels MUST always return a AdminLevelCollection'
             );
             $arrayData = $location->toArray();
-            $this->assertTrue(is_array($arrayData), 'Location::toArray MUST return an array.');
             $this->assertNotEmpty($arrayData, 'Location::toArray cannot be empty.');
 
             // Verify coordinates

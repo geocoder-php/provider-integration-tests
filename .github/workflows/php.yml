@@ -12,9 +12,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.4', '8.0', '8.1', '8.2', '8.3']
+        php-version: ['8.2', '8.3', '8.4', '8.5']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Use PHP ${{ matrix.php-version }}
       uses: shivammathur/setup-php@v2
       with:
@@ -31,12 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     name: PHPStan
     steps:
-    - uses: actions/checkout@v4
-    - name: Use PHP 8.3
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.3
-        extensions: curl
+    - uses: actions/checkout@v5
+    - uses: shivammathur/setup-php@v2
     - name: Install dependencies
       run: composer install --no-progress
     - name: Run PHPStan
