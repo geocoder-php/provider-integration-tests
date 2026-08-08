@@ -19,8 +19,8 @@ use Psr\Http\Client\ClientInterface;
  */
 class NominatimTest extends ProviderIntegrationTest
 {
-    protected bool $testIpv4 = false;
-    protected bool $testIpv6 = false;
+    protected static bool $testIpv4 = false;
+    protected static bool $testIpv6 = false;
 
     protected function createProvider(ClientInterface $httpClient)
     {
